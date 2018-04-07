@@ -18,6 +18,22 @@
  * own record. A member can access another member's details if the member has
  * added them to their authorized list.
  */
+
+/* Admin */
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
 rule AddMother{ 
     description: "Allow all participants to submit AuthorizeAccess transactions"
     participant: "ANY"

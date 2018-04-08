@@ -36,5 +36,5 @@ transaction RevokeAccess extends User {
 }
 
 event UserEvent {
-  o User user
+  o User User
 }

@@ -44,12 +44,12 @@ async function addUser(authorize) {  // eslint-disable-line no-unused-vars
         me.authorized.push(authorize.uid);
 
         // emit an event
-        const event = getFactory().newEvent('org.acme.regastar', 'User');
-        event.userEvent = authorize;
+        const event = getFactory().newEvent('org.acme.regastar', 'UserEvent');
+        event.User = authorize;
         emit(event);
 
         // persist the state of the member
-        const memberRegistry = await getParticipantRegistry('org.acme.regastar.User');
+        const memberRegistry = await getParticipantRegistry('org.acme.regastar.Member');
         await memberRegistry.update(me);
     }
 }

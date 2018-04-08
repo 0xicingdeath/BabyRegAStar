@@ -21,7 +21,7 @@ participant Member identified by uid {
   o String fingerprint optional 
   o String uid 
   o Long parentID optional
-  o DateTime dob optional
+  o DateTime dob
   o String[] authorized optional
 }
 
@@ -38,3 +38,4 @@ transaction RevokeAccess extends User {
 event UserEvent {
   o User User
 }
+

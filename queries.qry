@@ -15,10 +15,6 @@
 query selectMembers {
   description: "Select all members"
   statement:
-      SELECT org.acme.babyregastar.Person
+      SELECT org.acme.regastar.User
 }
-query select { 
-  description: "Find members from uid" 
-  statement: 
-  	SELECT org.acme.babyregastar.Person WHERE (uid == _$uid)
-} 
+

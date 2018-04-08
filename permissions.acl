@@ -19,7 +19,48 @@
  * added them to their authorized list.
  */
 
-/* Admin */
+rule AuthorizeAccessTransaction {
+    description: "Allow all participants to submit AuthorizeAccess transactions"
+    participant: "ANY"
+    operation: CREATE
+    resource: "org.acme.regastar.addUser"
+    action: ALLOW
+}
+
+rule RevokeAccessTransaction {
+    description: "Allow all participants to submit RevokeAccess transactions"
+    participant: "ANY"
+    operation: CREATE
+    resource: "org.acme.regastar.RevokeAccess"
+    action: ALLOW
+}
+
+rule OwnRecordFullAccess {
+    description: "Allow all participants full access to their own record"
+    participant(p): "org.acme.regastar.Member"
+    operation: ALL
+    resource(r): "org.acme.regastar.Member"
+    condition: (r.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule ForeignRecordConditionalAccess {
+    description: "Allow participants access to other people's records if granted"
+    participant(p): "org.acme.regastar.Member"
+    operation: ALL
+    resource(r): "org.acme.regastar.Member"
+    condition: (r.authorized && r.authorized.indexOf(p.getIdentifier()) > -1)
+    action: ALLOW
+}
+
+rule SystemACL {
+    description:  "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -27,6 +68,7 @@ rule NetworkAdminUser {
     resource: "**"
     action: ALLOW
 }
+
 rule NetworkAdminSystem {
     description: "Grant business network administrators full access to system resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
@@ -34,10 +76,3 @@ rule NetworkAdminSystem {
     resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
-rule AddMother{ 
-    description: "Allow all participants to submit AuthorizeAccess transactions"
-    participant: "ANY"
-    operation: CREATE
-    resource: "org.acme.babyregastar.addMother"
-    action: ALLOW
-} 

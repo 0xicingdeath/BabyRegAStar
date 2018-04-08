@@ -15,22 +15,26 @@
 /**
  * A business network where members can grant/revoke access to their personal information to other members
  */
-namespace org.acme.babyregastar
+namespace org.acme.regastar
 
-participant Person identified by uid {
+participant Member identified by uid {
   o String fingerprint optional 
-  o Long parent_id 
-  o String uid
+  o String uid 
+  o Long parentID optional
   o DateTime dob optional
-  o String order 
+  o String[] authorized optional
 }
 
-abstract transaction addUser {
-  o String memberId
+abstract transaction User {
+  o String uid
 }
 
-transaction addMother extends addUser {
+transaction addUser extends User {
 }
 
-transaction addChild extends addUser {
+transaction RevokeAccess extends User {
+}
+
+event UserEvent {
+  o User user
 }

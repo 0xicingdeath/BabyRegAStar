@@ -13,22 +13,75 @@
  */
 
 'use strict';
-/** 
-*Adding a mother object to the system  
-*/ 
-async function addMother(uid) { 
-} 
-
-/** 
-*Adding a mother 
-*/ 
-async function addChild() { 
-} 
 
 /* global getCurrentParticipant getParticipantRegistry getFactory emit */
 
 /**
  * A Member grants access to their record to another Member.
- * @param {org.acme.babyregastar.AuthorizeAccess} authorize - the authorize to be processed
+ * @param {org.acme.regastar.addUser} authorize - the authorize to be processed
  * @transaction
  */
+async function addUser(authorize) {  // eslint-disable-line no-unused-vars
+
+    const me = getCurrentParticipant();
+    console.log('**** AUTH: ' + me.getIdentifier() + ' granting access to ' + authorize.uid );
+
+    if(!me) {
+        throw new Error('A participant/certificate mapping does not exist.');
+    }
+
+    // if the member is not already authorized, we authorize them
+    let index = -1;
+
+    if(!me.authorized) {
+        me.authorized = [];
+    }
+    else {
+        index = me.authorized.indexOf(authorize.uid);
+    }
+
+    if(index < 0) {
+        me.authorized.push(authorize.uid);
+
+        // emit an event
+        const event = getFactory().newEvent('org.acme.regastar', 'User');
+        event.userEvent = authorize;
+        emit(event);
+
+        // persist the state of the member
+        const memberRegistry = await getParticipantRegistry('org.acme.regastar.User');
+        await memberRegistry.update(me);
+    }
+}
+
+/**
+ * A Member revokes access to their record from another Member.
+ * @param {org.acme.regastar.RevokeAccess} revoke - the RevokeAccess to be processed
+ * @transaction
+
+async function revokeAccess(revoke) {  // eslint-disable-line no-unused-vars
+
+    const me = getCurrentParticipant();
+    console.log('**** REVOKE: ' + me.getIdentifier() + ' revoking access to ' + revoke.memberId );
+
+    if(!me) {
+        throw new Error('A participant/certificate mapping does not exist.');
+    }
+
+    // if the member is authorized, we remove them
+    const index = me.authorized ? me.authorized.indexOf(revoke.memberId) : -1;
+
+    if(index>-1) {
+        me.authorized.splice(index, 1);
+
+        // emit an event
+        const event = getFactory().newEvent('org.acme.regastar', 'User');
+        event.userEvent = revoke;
+        emit(event);
+
+        // persist the state of the member
+        const memberRegistry = await getParticipantRegistry('org.acme.regastar.Member');
+        await memberRegistry.update(me);
+    }
+}
+*/ 
